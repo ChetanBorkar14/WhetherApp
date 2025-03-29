@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <style>
+      body {
+        background-color: #f4f4f9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        flex-direction: column;
+      }
+      .weather-container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 300px;
+      }
+      input,
+      button {
+        padding: 10px;
+        margin: 5px;
+        width: 80%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      button {
+        background-color: #5cb85c;
+        color: white;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #4cae4c;
+      }
+      .error {
+        color: red;
+        margin-top: 10px;
+      }
+      img {
+        width: 50px;
+        height: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="weather-container">
+      <h1>Weather App</h1>
+      <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="city" placeholder="Enter city" required />
+        <button type="submit">Get Weather</button>
+      </form>
+
+      {% if weather_data %}
+      <h2>{{ weather_data.city }}</h2>
+      <p>{{ weather_data.temperature }}°C</p>
+      <p>{{ weather_data.description }}</p>
+      <img
+        src="http://openweathermap.org/img/wn/{{ weather_data.icon }}.png"
+        alt="Weather Icon"
+      />
+      {% endif %} {% if error_message %}
+      <p class="error">{{ error_message }}</p>
+      {% endif %}
+    </div>
+  </body>
+</html>
