@@ -1,6 +1,9 @@
 from django.urls import path
-from .views import get_weather
+from .views import home, get_weather  # Make sure both are imported
 
 urlpatterns = [
-    path('', get_weather, name='get_weather'),
+    path('', home, name='home'),          # Serves home.html
+    path('weather/', get_weather),        # API endpoint (NO trailing slash in pattern)
+    # or alternatively:
+    path('api/weather/', get_weather),    # More explicit API path
 ]

@@ -47,14 +47,15 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',  # ✅ Required
     'django.contrib.messages.middleware.MessageMiddleware',  # ✅ Required
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+# settings.py
+APPEND_SLASH = False  # Add this anywhere in the file
 
-
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']  # ✅ Add this
+#CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']  # ✅ Add this
 
 
 ROOT_URLCONF = 'myproject.urls'
@@ -66,6 +67,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                #'django.template.context_processors.csrf',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
