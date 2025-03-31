@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'home',
+
+    'rest_framework',  # ✅ Add this
+    'home',  # ✅ Make sure your app is listed
 ]
 
 
@@ -46,10 +48,14 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  # ✅ Required
+    'django.contrib.messages.middleware.MessageMiddleware',  # ✅ Required
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']  # ✅ Add this
+
 
 ROOT_URLCONF = 'myproject.urls'
 
