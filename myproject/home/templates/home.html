@@ -1,73 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
     <style>
-      body {
-        background-color: #f4f4f9;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        font-family: Arial, sans-serif;
-        flex-direction: column;
-      }
-      .weather-container {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        width: 300px;
-      }
-      input,
-      button {
-        padding: 10px;
-        margin: 5px;
-        width: 80%;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-      button {
-        background-color: #5cb85c;
-        color: white;
-        cursor: pointer;
-      }
-      button:hover {
-        background-color: #4cae4c;
-      }
-      .error {
-        color: red;
-        margin-top: 10px;
-      }
-      img {
-        width: 50px;
-        height: 50px;
-      }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #74ebd5, #acb6e5);
+            text-align: center;
+            padding: 20px;
+        }
+        #weatherForm {
+            margin-top: 20px;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+        }
+        #cityInput {
+            width: 300px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px gray;
+            display: inline-block;
+            min-width: 300px;
+            text-align: left;
+        }
+        .weather-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
     </style>
-  </head>
-  <body>
-    <div class="weather-container">
-      <h1>Weather App</h1>
-      <form method="POST">
-        {% csrf_token %}
-        <input type="text" name="city" placeholder="Enter city" required />
+</head>
+<body>
+    <h1>Weather and AQI Checker</h1>
+    
+    <form id="weatherForm">
+        <input type="text" id="cityInput" placeholder="Enter city name" required>
         <button type="submit">Get Weather</button>
-      </form>
+    </form>
+    
+    <div id="result">Enter a city name to check weather and air quality</div>
 
-      {% if weather_data %}
-      <h2>{{ weather_data.city }}</h2>
-      <p>{{ weather_data.temperature }}°C</p>
-      <p>{{ weather_data.description }}</p>
-      <img
-        src="http://openweathermap.org/img/wn/{{ weather_data.icon }}.png"
-        alt="Weather Icon"
-      />
-      {% endif %} {% if error_message %}
-      <p class="error">{{ error_message }}</p>
-      {% endif %}
-    </div>
-  </body>
+    <script>
+        document.getElementById('weatherForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const city = document.getElementById('cityInput').value;
+            const resultDiv = document.getElementById('result');
+            
+            // Show loading state
+            resultDiv.innerHTML = '<p>Loading weather data for ' + city + '...</p>';
+
+            try {
+                const response = await fetch('/weather/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // No CSRF token needed
+                    },
+                    body: JSON.stringify({ city: city })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Display weather data
+                    resultDiv.innerHTML = `
+                        <h2>Weather in ${data.weather.city}</h2>
+                        <p>🌡️ Temperature: ${data.weather.temperature}°C</p>
+                        <p>💧 Precipitation: ${data.weather.precipitation} mm</p>
+                        <p>🌬️ Wind Speed: ${data.weather.wind_speed} km/h</p>
+                        <p>☀️ UV Index: ${data.uv_index}</p>
+                        <p>🏭 Air Quality Index: ${data.aqi}</p>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">Error: ${data.error || 'Unknown error occurred'}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">Network error: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
 </html>
